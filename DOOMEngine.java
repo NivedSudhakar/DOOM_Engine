@@ -10,6 +10,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import javax.swing.*;
 
+/**
+ *
+ * @author user
+ */
 public class DOOMEngine {
 
 
@@ -155,14 +159,6 @@ public class DOOMEngine {
 
         }
 
-
-
-
-        /*for(int i = x; i < x+100; i++) {
-            for(int j = y; j < y+100; j++) {
-                img.setRGB(i, j, color.getRGB());
-            }
-        }*/
         return color;
 
     }
@@ -208,6 +204,36 @@ public class DOOMEngine {
         wz[2] = wz[0] + 40;
         wz[3] = wz[1] + 40;
 
+        if(wy[0] < 1 && wy[1] < 1) {
+            return;
+        }
+        if(wy[0]<1) {
+            int[] vals = clipPlayer(wx[0], wy[0], wz[0], wx[1], wy[1], wz[1]);
+            wx[0] = vals[0];
+            wy[0] = vals[1];
+            wz[0] = vals[2];
+
+            vals = clipPlayer(wx[2], wy[2], wz[2], wx[3], wy[3], wz[3]);
+            wx[2] = vals[0];
+            wy[2] = vals[1];
+            wz[2] = vals[2];
+
+
+        }
+        if(wy[1]<1) {
+            int[] vals = clipPlayer(wx[1], wy[1], wz[1], wx[0], wy[0], wz[0]);
+            wx[1] = vals[0];
+            wy[1] = vals[1];
+            wz[1] = vals[2];
+
+            vals = clipPlayer(wx[3], wy[3], wz[3], wx[2], wy[2], wz[2]);
+            wx[3] = vals[0];
+            wy[3] = vals[1];
+            wz[3] = vals[2];
+
+
+        }
+
         wx[0] = wy[0] == 0 ? 0 : wx[0]*200/wy[0] + WIDTH/2;
         wy[0] = wy[0] == 0 ? 0 : wz[0]*200/wy[0] + HEIGHT/2;
 
@@ -240,7 +266,23 @@ public class DOOMEngine {
     public void drawWall(int[] x, int[] y) {
 
 
+        for(int i = 0; i < x.length; i ++) {
+            if (x[i] < 1) {
+                x[i] = 1;
+            }
+            if(x[i] > WIDTH-1) {
+                x[i] = WIDTH-1;
+            }
+        }
 
+        for(int i = 0; i < y.length; i ++) {
+            if (y[i] < 1) {
+                y[i] = 1;
+            }
+            if(y[i] > HEIGHT-1) {
+                y[i] = HEIGHT-1;
+            }
+        }
 
 
 
@@ -257,15 +299,22 @@ public class DOOMEngine {
         g.dispose();
 
 
+    }
 
 
+    public int[] clipPlayer(int x1, int y1, int z1, int x2, int y2, int z2) {
+        double s = y1/(y1-y2);
 
+        x1 = (int) (x1 + s*(x2-x1));
+        y1 = (int) (y1 + s*(y2-y1));
+        if(y1 == 0) {
+            y1 = 1;
+        }
+        z1 = (int) (z1 + s*(z2-z1));
 
+        int[] vals = {x1, y1, z1};
 
-
-
-
-
+        return vals;
     }
 
 
